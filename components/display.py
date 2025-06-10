@@ -8,26 +8,27 @@ def exibir_protocolos():
         st.info("Nenhum protocolo cadastrado.")
         return
 
-    filtro = st.selectbox("Filtrar por categoria:", ["Todos"] + sorted(df["categoria"].unique()))
-    if filtro != "Todos":
-        df = df[df["categoria"] == filtro]
+    grupos = sorted(df["grupo"].dropna().unique())
+    grupo_filtro = st.sidebar.selectbox("Filtrar por grupo", ["Todos"] + grupos)
 
-    for nome, grupo in df.groupby("nome"):
-        grupo = grupo.sort_values("versao", ascending=False)
-        st.markdown(f"## 🧪 {nome}")
-        for _, row in grupo.iterrows():
-            with st.expander(f"📄 Versão {row['versao']}"):
-                st.markdown(f"**Autor:** {row['autor']} ({row['email']})")
-                st.markdown(f"**Departamento:** {row['departamento']} | **Cargo:** {row['cargo']}")
-                st.markdown(f"**Data:** {row['data']} | **Validade:** {row['validade']}")
+    if grupo_filtro != "Todos":
+        df = df[df["grupo"] == grupo_filtro]
 
-                if datetime.fromisoformat(row["validade"]) < datetime.today():
-                    st.error("⚠️ Protocolo vencido!")
-                elif (datetime.fromisoformat(row["validade"]) - datetime.today()).days <= 7:
-                    st.warning("⚠️ Protocolo próximo da validade")
+    st.title("📚 Controle de Versionamento de Protocolos")
 
-                st.markdown(f"**Categoria:** {row['categoria']}")
-                st.code(row["conteudo"], language="text")
-                if row["pdf_nome"]:
-                    st.markdown(f"📎 PDF anexado: `{row['pdf_nome']}`")
-                st.markdown(f"🕓 Histórico: {row['historico']}")
+    for grupo in df["grupo"].unique():
+        st.markdown(f"## 🧪 {grupo}")
+        grupo_df = df[df["grupo"] == grupo]
+        for categoria in grupo_df["categoria"].unique():
+            st.markdown(f"### 📂 {categoria}")
+            cat_df = grupo_df[grupo_df["categoria"] == categoria]
+            for _, row in cat_df.iterrows():
+                col1, col2 = st.columns([1, 4])
+                with col1:
+                    if isinstance(row["arquivo_nome"], str) and row["arquivo_nome"].endswith((".png", ".jpg", ".jpeg")):
+                        st.image(row["arquivo_nome"], width=100)
+                    else:
+                        st.markdown("📄")
+                with col2:
+                    st.markdown(f"**{row['nome']}** (versão {row['versao']})  \n**Autor:** {row['autor']}  \n**Validade:** {row['validade']}")
+                    st.markdown(f"🕓 *{row['historico']}*")
