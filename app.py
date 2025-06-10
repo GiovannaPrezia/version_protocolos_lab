@@ -6,9 +6,9 @@ st.set_page_config(page_title="Controle de Protocolos", page_icon="🧪")
 
 if "dados" not in st.session_state:
     st.session_state.dados = pd.DataFrame(columns=[
-        "id", "nome", "versao", "data", "validade", "categoria",
+        "id", "nome", "grupo", "categoria", "versao", "data", "validade",
         "autor", "email", "departamento", "cargo",
-        "conteudo", "pdf_nome", "historico"
+        "conteudo", "arquivo_nome", "historico"
     ])
 
 menu = st.sidebar.radio("Menu", ["➕ Novo Protocolo", "📄 Visualizar Protocolos", "📤 Exportar/Backup"])
