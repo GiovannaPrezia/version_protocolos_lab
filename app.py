@@ -15,7 +15,7 @@ if "dados" not in st.session_state:
 # Menu lateral com navegação
 menu = st.sidebar.radio("Menu", [
     "➕ Novo Protocolo",
-    "📄 Visualizar Protocolos",
+    "📄 Protocolos Gerais",
     "🧬 Protocolos de Reagentes",
     "📤 Exportar / Backup"
 ])
@@ -24,7 +24,7 @@ menu = st.sidebar.radio("Menu", [
 if menu == "➕ Novo Protocolo":
     forms.exibir_formulario()
 
-elif menu == "📄 Visualizar Protocolos":
+elif menu == "📄 Protocolos Gerais":
     display.exibir_protocolos()
 
 elif menu == "🧬 Protocolos de Reagentes":
