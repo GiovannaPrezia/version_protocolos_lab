@@ -1,4 +1,3 @@
-# app.py
 import streamlit as st
 import pandas as pd
 import datetime
@@ -31,9 +30,8 @@ if aba == "📄 Visualizar":
     with st.expander("🔍 Filtrar protocolos"):
         filtro_nome = st.text_input("Filtrar por nome:")
         filtro_autor = st.text_input("Filtrar por autor:")
-        df_filtrado = filtrar_protocolos(st.session_state.dados, filtro_nome, filtro_autor)
-    else:
-        df_filtrado = st.session_state.dados
+
+    df_filtrado = filtrar_protocolos(st.session_state.dados, filtro_nome, filtro_autor)
 
     if df_filtrado.empty:
         st.info("Nenhum protocolo encontrado.")
