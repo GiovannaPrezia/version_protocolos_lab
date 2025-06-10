@@ -18,16 +18,19 @@ def exibir_formulario():
             st.info(f"⚠️ Já existe protocolo com nome semelhante. Versões existentes: {', '.join(similares)}")
 
     grupo = st.selectbox("Grupo responsável", ["GRUPO CARDIO", "GRUPO TRONCO", "GRUPO MARCO", "OUTRO"])
-    categoria = st.selectbox("Categoria", ["PCR", "Cultura Celular", "Extração", "Imunofluorescência", "Outro"])
-    validade = st.date_input("Validade", value=datetime.date.today())
 
+    # Tipo de protocolo define a categoria
+    categoria = st.selectbox("Tipo de protocolo", ["🔬 Protocolo Laboratorial", "🧪 Protocolo de Reagentes/Soluções"])
+
+    validade = st.date_input("Validade", value=datetime.date.today())
     autor = st.text_input("Seu nome")
     email = st.text_input("Seu e-mail")
     cargo = st.text_input("Cargo")
     conteudo = st.text_area("Conteúdo do protocolo", height=200)
 
-    # Campo reagentes necessários (seleção múltipla de protocolos existentes da categoria "Reagente")
-    reagentes_opcoes = df[df["categoria"] == "Reagente"]["nome"].unique().tolist()
+    # Campo reagentes necessários (filtrar apenas se houver reagentes cadastrados)
+    reagentes_df = df[df["categoria"] == "🧪 Protocolo de Reagentes/Soluções"]
+    reagentes_opcoes = reagentes_df["nome"].unique().tolist()
     reagentes = st.multiselect("Reagentes necessários", reagentes_opcoes)
 
     # Upload de arquivo (PDF, imagem, docx, xlsx, etc.)
