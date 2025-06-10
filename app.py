@@ -2,6 +2,7 @@ from components import forms, display, export
 import streamlit as st
 import pandas as pd
 
+
 st.set_page_config(page_title="Controle de Protocolos", page_icon="🧪")
 
 if "dados" not in st.session_state:
