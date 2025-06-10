@@ -17,7 +17,7 @@ def exibir_protocolos():
     st.title("📚 Controle de Versionamento de Protocolos")
     st.markdown("### Protocolos cadastrados")
 
-    col_main, col_sidebar = st.columns([4, 1.5])  # corpo principal + painel lateral
+    col_main, col_sidebar = st.columns([4, 1.5])
 
     with col_main:
         for grupo in df["grupo"].unique():
@@ -27,26 +27,21 @@ def exibir_protocolos():
                 st.markdown(f"#### 📂 {categoria}")
                 cat_df = grupo_df[grupo_df["categoria"] == categoria]
 
-                cards = []
                 for _, row in cat_df.iterrows():
-                    nome = row["nome"][:28] + "..." if len(row["nome"]) > 28 else row["nome"]
-                    card = f"""
-                        <div style="border:1px solid #444;padding:12px;border-radius:8px;background:#1e1e1e;margin:5px;width:100%;text-align:center;">
-                            <div style="font-size:14px;color:#bbb;">📝 {nome}</div>
-                            <div style="font-size:12px;color:#999;margin-top:4px;">{row["data"]}</div>
-                            <div style="font-size:32px;margin:6px 0;">📄</div>
-                            <div style="font-size:11px;color:#888;">Versão {row["versao"]}</div>
-                        </div>
-                    """
-                    cards.append(card)
+                    with st.expander(f"📄 {row['nome']} (versão {row['versao']})"):
+                        st.markdown(f"**Autor:** {row['autor']} ({row['email']})")
+                        st.markdown(f"**Departamento:** {row['departamento']} | **Cargo:** {row['cargo']}")
+                        st.markdown(f"**Data de criação:** {row['data']}  \n**Validade:** {row['validade']}")
+                        st.markdown(f"**Categoria:** {row['categoria']}")
+                        st.markdown(f"**Grupo:** {row['grupo']}")
+                        st.markdown(f"🕓 Histórico: _{row['historico']}_")
+                        st.markdown("**Conteúdo:**")
+                        st.code(row["conteudo"], language="text")
 
-                # exibe os cards 3 por linha
-                for i in range(0, len(cards), 3):
-                    cols = st.columns(3)
-                    for j in range(3):
-                        if i + j < len(cards):
-                            with cols[j]:
-                                st.markdown(cards[i + j], unsafe_allow_html=True)
+                        if st.button(f"🗑️ Excluir versão {row['versao']} do protocolo", key=row["id"]):
+                            st.session_state.dados = st.session_state.dados[st.session_state.dados["id"] != row["id"]]
+                            st.success(f"Versão {row['versao']} excluída com sucesso.")
+                            st.experimental_rerun()
 
     with col_sidebar:
         st.markdown("### 🕒 Atividades recentes")
