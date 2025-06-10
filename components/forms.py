@@ -8,7 +8,7 @@ def exibir_formulario():
         st.subheader("Cadastro de novo protocolo")
 
         nome = st.text_input("Nome do protocolo")
-        grupo = st.selectbox("Grupo responsável", ["GRUPO CARDIO", "GRUPO SEILA", "GRUPO MARCO", "OUTRO"])
+        grupo = st.selectbox("Grupo responsável", ["GRUPO CARDIO", "GRUPO TRONCO", "GRUPO SEILA", "GRUPO MARCO", "OUTRO"])
         categoria = st.selectbox("Categoria", ["PCR", "Cultura Celular", "Extração", "Imunofluorescência", "Outro"])
         validade = st.date_input("Validade", value=datetime.date.today())
 
@@ -20,7 +20,11 @@ def exibir_formulario():
 
         enviar = st.form_submit_button("Salvar")
 
-        if enviar and nome and autor and conteudo:
+        if enviar:
+            if not nome or not autor or not conteudo:
+                st.warning("Por favor, preencha todos os campos obrigatórios.")
+                return
+
             df = st.session_state.dados
             hoje = datetime.date.today().isoformat()
             ja_existe = df[df["nome"] == nome]
@@ -40,7 +44,7 @@ def exibir_formulario():
                 "departamento": departamento,
                 "cargo": cargo,
                 "conteudo": conteudo,
-                "arquivo_nome": "",
+                "arquivo_nome": "",  # reservado para futuras melhorias
                 "historico": historico
             }
 
