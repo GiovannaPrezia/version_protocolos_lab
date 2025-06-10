@@ -8,7 +8,7 @@ def exibir_formulario():
         st.subheader("Cadastro de novo protocolo")
 
         nome = st.text_input("Nome do protocolo")
-        grupo = st.selectbox("Grupo responsável", ["GRUPO CARDIO", "GRUPO TRONCO", "GRUPO 3D", "OUTRO"])
+        grupo = st.selectbox("Grupo responsável", ["GRUPO CARDIO", "GRUPO SEILA", "GRUPO MARCO", "OUTRO"])
         categoria = st.selectbox("Categoria", ["PCR", "Cultura Celular", "Extração", "Imunofluorescência", "Outro"])
         validade = st.date_input("Validade", value=datetime.date.today())
 
@@ -16,13 +16,7 @@ def exibir_formulario():
         email = st.text_input("Seu e-mail")
         departamento = st.text_input("Departamento")
         cargo = st.text_input("Cargo")
-
         conteudo = st.text_area("Conteúdo do protocolo", height=200)
-
-        arquivo = st.file_uploader(
-            "Anexar arquivo (PDF, PNG, Word, Excel)",
-            type=["pdf", "docx", "csv", "xlsx", "txt", "png", "jpg", "jpeg"]
-        )
 
         enviar = st.form_submit_button("Salvar")
 
@@ -31,7 +25,6 @@ def exibir_formulario():
             hoje = datetime.date.today().isoformat()
             ja_existe = df[df["nome"] == nome]
             versao = ja_existe["versao"].max() + 1 if not ja_existe.empty else 1
-            nome_arquivo = arquivo.name if arquivo else ""
             historico = f"[{hoje}] {autor} criou a versão {versao}"
 
             novo = {
@@ -47,7 +40,7 @@ def exibir_formulario():
                 "departamento": departamento,
                 "cargo": cargo,
                 "conteudo": conteudo,
-                "arquivo_nome": nome_arquivo,
+                "arquivo_nome": "",
                 "historico": historico
             }
 
