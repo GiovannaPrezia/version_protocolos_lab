@@ -14,7 +14,8 @@ def exibir_protocolos():
     if grupo_filtro != "Todos":
         df = df[df["grupo"] == grupo_filtro]
 
-    st.title("📚 Controle de Versionamento de Protocolos")
+    st.title("📚 LabTrack: Plataforma de Controle de Versionamento de Protocolos")
+    st.subtitle("Gerencie e visualize seus protocolos de forma eficiente")
     st.markdown("### Protocolos cadastrados")
 
     col_main, col_atividades = st.columns([4, 1.5])
