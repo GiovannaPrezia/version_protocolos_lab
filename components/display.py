@@ -5,33 +5,39 @@ def exibir_protocolos():
     df = st.session_state.dados
 
     if df.empty:
-        st.info("Nenhum protocolo cadastrado.")
+        st.info("Nenhum protocolo cadastrado ainda.")
         return
 
-    grupos = sorted(df["grupo"].dropna().unique())
-    grupo_filtro = st.sidebar.selectbox("Filtrar por grupo", ["Todos"] + grupos)
+    st.title("📚 Controle de Versionamento de Protocolos")
+    st.subheader("Gerencie e visualize seus protocolos de forma eficiente")
 
-    if grupo_filtro != "Todos":
-        df = df[df["grupo"] == grupo_filtro]
-
-    st.title("📚 LabTrack: Plataforma de Controle de Versionamento de Protocolos")
-    st.markdown("### Protocolos cadastrados")
-
-    col_main, col_atividades = st.columns([4, 1.5])
+    col_main, col_atividades = st.columns([4, 1.6])
 
     with col_main:
-        for grupo in df["grupo"].unique():
+        grupos = df["grupo"].dropna().unique()
+        for grupo in grupos:
             st.markdown(f"### 🧪 {grupo}")
             grupo_df = df[df["grupo"] == grupo]
+
             for categoria in grupo_df["categoria"].unique():
                 st.markdown(f"#### 📂 {categoria}")
                 cat_df = grupo_df[grupo_df["categoria"] == categoria]
 
                 cards = []
                 for _, row in cat_df.iterrows():
-                    nome = row["nome"][:28] + "..." if len(row["nome"]) > 28 else row["nome"]
+                    nome = row["nome"][:30] + "..." if len(row["nome"]) > 30 else row["nome"]
                     data = row["data"]
                     versao = row["versao"]
+                    reagentes = row.get("reagentes", [])
+                    tem_anexo = bool(row.get("arquivo_nome"))
+
+                    reagentes_html = ""
+                    if isinstance(reagentes, list) and reagentes:
+                        for r in reagentes:
+                            reagentes_html += f'<a href="#🧬 Protocolos de Reagentes" style="color:#4da6ff;">{r}</a>, '
+                        reagentes_html = f"<div style='font-size:11px;color:#4da6ff;'>Reagentes: {reagentes_html[:-2]}</div>"
+
+                    icone = "📎" if tem_anexo else "📄"
 
                     card_html = f"""
                         <div style="
@@ -40,14 +46,15 @@ def exibir_protocolos():
                             border-radius: 10px; 
                             background-color: #1e1e1e;
                             text-align: center;
-                            height: 150px;
+                            height: 170px;
                             box-shadow: 0 2px 8px rgba(0,0,0,0.3);
                             overflow: hidden;
+                            margin-bottom: 10px;
                         ">
-                            <div style="font-size: 20px; margin-bottom: 10px;">📄</div>
-                            <div style="font-size: 14px; color: #bbb;">{nome}</div>
-                            <div style="font-size: 12px; color: #888;">{data}</div>
-                            <div style="font-size: 11px; color: #888;">Versão {versao}</div>
+                            <div style="font-size: 24px; margin-bottom: 8px;">{icone}</div>
+                            <div style="font-size: 14px; color: #ccc;">{nome}</div>
+                            <div style="font-size: 12px; color: #999;">Versão {versao} • {data}</div>
+                            {reagentes_html}
                         </div>
                     """
                     cards.append(card_html)
