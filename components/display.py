@@ -25,13 +25,13 @@ def exibir_protocolos():
             for _, row in cat_df.iterrows():
                 col1, col2 = st.columns([1, 4])
                 with col1:
-                    if isinstance(row["arquivo_nome"], str) and row["arquivo_nome"].lower().endswith((".png", ".jpg", ".jpeg")):
-                        st.image(row["arquivo_nome"], width=100)
-                    else:
-                        st.markdown("📄")
+                    st.markdown("📄")
 
                 with col2:
                     st.markdown(f"**{row['nome']}** (versão {row['versao']})")
                     st.markdown(f"**Autor:** {row['autor']}")
                     st.markdown(f"**Validade:** {row['validade']}")
                     st.markdown(f"🕓 *{row['historico']}*")
+
+                    with st.expander("📖 Ver conteúdo do protocolo"):
+                        st.code(row["conteudo"], language="text")
