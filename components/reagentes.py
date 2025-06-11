@@ -13,7 +13,7 @@ def exibir_reagentes():
         return
 
     # Identificar se veio da URL
-    query = st.experimental_get_query_params()
+    qquery = st.query_params
     reagente_destaque = unquote(query["reagente"][0]) if "reagente" in query else None
 
     # Campo de busca manual
