@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-from components import forms, display, export
+from components import forms, display, export, reagentes
 
 st.set_page_config(page_title="Controle de Protocolos", page_icon="🧪", layout="wide")
 
