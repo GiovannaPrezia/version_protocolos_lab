@@ -23,11 +23,11 @@ def exibir_protocolos():
     st.markdown("<p style='font-size: 14px;'>Visualize os protocolos laboratoriais cadastrados</p>", unsafe_allow_html=True)
 
     col_main, col_atividades = st.columns([4, 1.6])
-
+ 
     with col_main:
         grupos = df["grupo"].dropna().unique()
         for grupo in grupos:
-            st.markdown(f"<h4 style='color:#fff;'>🤪 {grupo}</h4>", unsafe_allow_html=True)
+            st.markdown(f"<h4 style='color:#fff;'>{grupo}</h4>", unsafe_allow_html=True)
             grupo_df = df[df["grupo"] == grupo]
 
             for categoria in grupo_df["categoria"].unique():
