@@ -12,7 +12,7 @@ def exibir_reagentes():
         <hr style='border: 1px solid #555;'>
     """, unsafe_allow_html=True)
 
-    st.title("🤔 Protocolos de Reagentes")
+    st.title("Protocolos de Reagentes")
     st.markdown("Esta seção lista os protocolos classificados como reagentes/soluções.")
 
     if reag_df.empty:
