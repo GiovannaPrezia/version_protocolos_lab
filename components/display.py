@@ -46,7 +46,7 @@ def exibir_protocolos():
                             </div>
                             """,
                             unsafe_allow_html=True
-                        )
+                        ) 
 
     with col_side:
         st.markdown("### 🕒 Atividades recentes")
