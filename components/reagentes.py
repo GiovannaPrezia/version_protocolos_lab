@@ -5,18 +5,24 @@ def exibir_reagentes():
     df = st.session_state.dados
     reag_df = df[df["categoria"] == "🧪 Protocolo de Reagentes/Soluções"]
 
-    st.title("🧬 Protocolos de Reagentes")
+    st.markdown("""
+        <h2 style='text-align: center; color: #fff; margin-bottom: 0;'>
+            🔬 LabTrack: Plataforma de Controle de Versionamento de Protocolos Laboratoriais
+        </h2>
+        <hr style='border: 1px solid #555;'>
+    """, unsafe_allow_html=True)
+
+    st.title("🤔 Protocolos de Reagentes")
     st.markdown("Esta seção lista os protocolos classificados como reagentes/soluções.")
 
     if reag_df.empty:
         st.info("Nenhum reagente cadastrado ainda.")
         return
 
-    # Identificar se veio da URL
-    qquery = st.query_params
-    reagente_destaque = unquote(query["reagente"][0]) if "reagente" in query else None
+    query = st.query_params
+    reagente_destaque = query.get("reagente", [None])[0]
+    reagente_destaque = unquote(reagente_destaque) if reagente_destaque else None
 
-    # Campo de busca manual
     termo = st.text_input("🔍 Buscar reagente por nome")
     if termo:
         reag_df = reag_df[reag_df["nome"].str.contains(termo, case=False, na=False)]
