@@ -1,6 +1,6 @@
 import streamlit as st
-from datetime import datetime
 from urllib.parse import quote
+from datetime import datetime
 
 def exibir_protocolos():
     df = st.session_state.dados
@@ -15,39 +15,51 @@ def exibir_protocolos():
         <hr>
     """, unsafe_allow_html=True)
 
-    st.subheader("📄 Protocolos Gerais")
+    st.markdown("## Protocolos cadastrados")
+    termo = st.text_input("🔎 Filtrar protocolos")
 
-    for grupo in df["grupo"].dropna().unique():
-        st.markdown(f"### 🧪 {grupo}")
-        grupo_df = df[df["grupo"] == grupo]
+    if termo:
+        df = df[df["nome"].str.contains(termo, case=False, na=False)]
 
-        for categoria in grupo_df["categoria"].unique():
-            st.markdown(f"#### 📂 {categoria}")
-            cat_df = grupo_df[grupo_df["categoria"] == categoria]
+    col_main, col_side = st.columns([4, 1.7])
 
-            for _, row in cat_df.iterrows():
-                with st.container():
-                    st.markdown(f"**{row['nome']}** (Versão {row['versao']})")
-                    if st.button("📖 Ver detalhes", key=f"abrir_{row['id']}"):
-                        st.markdown("---")
-                        st.markdown(f"📂 **Categoria:** {row['categoria']}")
-                        st.markdown(f"👤 **Autor:** {row['autor']} ({row['email']})")
-                        st.markdown(f"🏢 **Departamento:** {row['departamento']} • **Cargo:** {row['cargo']}")
-                        st.markdown(f"📅 **Data:** {row['data']} • **Validade:** {row['validade']}")
-                        st.markdown(f"📝 **Conteúdo:**\n\n{row['conteudo']}")
+    with col_main:
+        for grupo in df["grupo"].dropna().unique():
+            st.markdown(f"### 🧪 {grupo}")
+            grupo_df = df[df["grupo"] == grupo]
 
-                        # Exibir reagentes como links clicáveis
-                        if row["reagentes"]:
-                            links = [
-                                f'<a href="/?reagente={quote(r)}" style="color:#4da6ff;">{r}</a>'
-                                for r in row["reagentes"]
-                            ]
-                            st.markdown(f"🧬 **Reagentes:** {' • '.join(links)}", unsafe_allow_html=True)
+            for categoria in grupo_df["categoria"].dropna().unique():
+                st.markdown(f"#### 📂 {categoria}")
+                cat_df = grupo_df[grupo_df["categoria"] == categoria]
 
-                        # Histórico do protocolo
-                        st.markdown("🕘 **Histórico:**")
-                        st.code(row["historico"] or "Sem histórico disponível", language="text")
+                cols = st.columns(3)
+                for idx, (_, row) in enumerate(cat_df.iterrows()):
+                    with cols[idx % 3]:
+                        st.markdown(
+                            f"""
+                            <div style='border:1px solid #555; border-radius:10px; padding:10px; background-color:#111; color:#eee; margin-bottom:15px;'>
+                                <div style='font-size:12px; color:#aaa;'>📄 {row['nome']}</div>
+                                <div style='font-size:11px; color:#888;'>Versão {row['versao']} • {row['data']}</div>
+                                <div style='margin-top:10px;'>
+                                    <a href='#{quote(row["nome"])}' style='color:#4da6ff; font-size:12px;'>🔍 Ver detalhes</a>
+                                </div>
+                            </div>
+                            """,
+                            unsafe_allow_html=True
+                        )
 
-                        # Botão para download, se houver anexo
-                        if row["arquivo_bytes"]:
-                            st.download_button("📎 Baixar Anexo", row["arquivo_bytes"], file_name=row["arquivo_nome"])
+    with col_side:
+        st.markdown("### 🕒 Atividades recentes")
+        recentes = df.sort_values("data", ascending=False).head(6)
+
+        for _, row in recentes.iterrows():
+            st.markdown(
+                f"""
+                <div style='border-left: 3px solid #4da6ff; padding-left: 10px; margin-bottom: 15px;'>
+                    <div style='font-size:13px;'><b>{row['autor']}</b></div>
+                    <div style='font-size:12px;'>📄 <a href='#{quote(row["nome"])}' style='color:#4da6ff;'>{row['nome']}</a></div>
+                    <div style='font-size:11px; color:#999;'>{row['data']} | ID: {row['id']}</div>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
