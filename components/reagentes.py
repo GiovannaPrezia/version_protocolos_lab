@@ -5,14 +5,7 @@ def exibir_reagentes():
     df = st.session_state.dados
     reag_df = df[df["categoria"] == "🧪 Protocolo de Reagentes/Soluções"]
 
-    st.markdown("""
-        <h2 style='text-align: center; color: #fff; margin-bottom: 0;'>
-            🔬 LabTrack: Plataforma de Controle de Versionamento de Protocolos Laboratoriais
-        </h2>
-        <hr style='border: 1px solid #555;'>
-    """, unsafe_allow_html=True)
-
-    st.title("Protocolos de Reagentes")
+    st.title("🧬 Protocolos de Reagentes")
     st.markdown("Esta seção lista os protocolos classificados como reagentes/soluções.")
 
     if reag_df.empty:
@@ -28,22 +21,19 @@ def exibir_reagentes():
         reag_df = reag_df[reag_df["nome"].str.contains(termo, case=False, na=False)]
 
     for _, row in reag_df.iterrows():
-        nome = row["nome"]
-        versao = row["versao"]
-        autor = row["autor"]
-        validade = row["validade"]
-        conteudo = row["conteudo"]
-        protocolo_id = row["id"]
-
-        aberto = nome.lower() == reagente_destaque.lower() if reagente_destaque else False
-
-        with st.expander(f"{nome} (versão {versao})", expanded=aberto):
-            st.markdown(f"**Autor:** {autor}")
-            st.markdown(f"**Validade:** {validade}")
-            st.markdown("**Conteúdo do reagente:**")
-            st.code(conteudo, language="text")
-
-            if st.button(f"🗑️ Excluir este protocolo (ID: {protocolo_id})", key=protocolo_id):
-                st.session_state.dados = st.session_state.dados[st.session_state.dados["id"] != protocolo_id]
-                st.success(f"Protocolo '{nome}' removido com sucesso!")
-                st.experimental_rerun()
+        aberto = row["nome"].lower() == reagente_destaque.lower() if reagente_destaque else False
+        with st.container():
+            st.markdown(f"<h5>📘 {row['nome']} (versão {row['versao']})</h5>", unsafe_allow_html=True)
+            if aberto or st.button(f"🔍 Ver {row['nome']}", key=row['id']):
+                st.markdown(f"<h6 style='color:#ffd700;'>📂 {row['categoria']}</h6>", unsafe_allow_html=True)
+                st.markdown(f"👤 **Autor:** {row['autor']} ({row['email']})")
+                st.markdown(f"🏢 **Departamento:** {row['departamento']} • **Cargo:** {row['cargo']}")
+                st.markdown(f"📅 **Data:** {row['data']} • **Validade:** {row['validade']}")
+                st.markdown("📄 **Conteúdo do reagente:**")
+                st.code(row["conteudo"], language="text")
+                st.markdown("🕘 **Histórico:**")
+                st.code(row["historico"], language="text")
+                if st.button(f"🗑️ Excluir (ID: {row['id']})", key=f"del_{row['id']}"):
+                    st.session_state.dados = st.session_state.dados[st.session_state.dados["id"] != row["id"]]
+                    st.success("Protocolo removido com sucesso!")
+                    st.experimental_rerun()
