@@ -8,8 +8,11 @@ def exibir_protocolos():
         st.info("Nenhum protocolo cadastrado ainda.")
         return
 
-    st.title("📚 Controle de Versionamento de Protocolos")
-    st.subheader("Gerencie e visualize seus protocolos de forma eficiente")
+    # Ocultar reagentes da tela principal
+    df = df[df["categoria"] != "🧪 Protocolo de Reagentes/Soluções"]
+
+    st.title("📄 Protocolos Gerais")
+    st.subheader("Visualize os protocolos laboratoriais cadastrados")
 
     col_main, col_atividades = st.columns([4, 1.6])
 
@@ -68,7 +71,7 @@ def exibir_protocolos():
 
     with col_atividades:
         st.markdown("### 🕒 Atividades recentes")
-        atividades = df.sort_values("data", ascending=False).head(10)
+        atividades = st.session_state.dados.sort_values("data", ascending=False).head(10)
 
         for _, row in atividades.iterrows():
             atividade_html = f"""
