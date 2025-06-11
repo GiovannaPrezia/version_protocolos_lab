@@ -8,8 +8,16 @@ def exibir_protocolos():
         st.info("Nenhum protocolo cadastrado ainda.")
         return
 
-    # Ocultar reagentes da tela principal
+    # Ocultar protocolos de reagentes
     df = df[df["categoria"] != "🧪 Protocolo de Reagentes/Soluções"]
+
+    # Título fixo
+    st.markdown("""
+        <h1 style='text-align: center; color: #fff; margin-bottom: 10px;'>
+            🔬 LabTrack: Plataforma de Controle de Versionamento de Protocolos Laboratoriais
+        </h1>
+        <hr style='border: 1px solid #555; margin-top: -10px;'>
+    """, unsafe_allow_html=True)
 
     st.title("📄 Protocolos Gerais")
     st.subheader("Visualize os protocolos laboratoriais cadastrados")
@@ -26,49 +34,38 @@ def exibir_protocolos():
                 st.markdown(f"#### 📂 {categoria}")
                 cat_df = grupo_df[grupo_df["categoria"] == categoria]
 
-                cards = []
                 for _, row in cat_df.iterrows():
-                    nome = row["nome"][:30] + "..." if len(row["nome"]) > 30 else row["nome"]
-                    data = row["data"]
+                    nome = row["nome"]
                     versao = row["versao"]
+                    data = row["data"]
+                    autor = row["autor"]
+                    validade = row["validade"]
+                    conteudo = row["conteudo"]
                     reagentes = row.get("reagentes", [])
-                    tem_anexo = bool(row.get("arquivo_nome"))
+                    anexo_nome = row.get("arquivo_nome", "")
+                    anexo_bytes = row.get("arquivo_bytes", None)
 
-                    reagentes_html = ""
-                    if isinstance(reagentes, list) and reagentes:
-                        for r in reagentes:
-                            reagentes_html += f'<a href="#🧬 Protocolos de Reagentes" style="color:#4da6ff;">{r}</a>, '
-                        reagentes_html = f"<div style='font-size:11px;color:#4da6ff;'>Reagentes: {reagentes_html[:-2]}</div>"
+                    with st.expander(f"{nome} (Versão {versao} • {data})"):
+                        st.markdown(f"**Autor:** {autor}")
+                        st.markdown(f"**Validade:** {validade}")
+                        st.markdown("**Conteúdo:**")
+                        st.code(conteudo, language="text")
 
-                    icone = "📎" if tem_anexo else "📄"
+                        if reagentes:
+                            links = [
+                                f'<a href="/?reagente={r}" style="color:#4da6ff;">{r}</a>'
+                                for r in reagentes
+                            ]
+                            st.markdown(f"**Reagentes utilizados:** {' • '.join(links)}", unsafe_allow_html=True)
 
-                    card_html = f"""
-                        <div style="
-                            border: 1px solid #444; 
-                            padding: 12px; 
-                            border-radius: 10px; 
-                            background-color: #1e1e1e;
-                            text-align: center;
-                            height: 170px;
-                            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-                            overflow: hidden;
-                            margin-bottom: 10px;
-                        ">
-                            <div style="font-size: 24px; margin-bottom: 8px;">{icone}</div>
-                            <div style="font-size: 14px; color: #ccc;">{nome}</div>
-                            <div style="font-size: 12px; color: #999;">Versão {versao} • {data}</div>
-                            {reagentes_html}
-                        </div>
-                    """
-                    cards.append(card_html)
+                        if anexo_bytes:
+                            st.download_button(
+                                label=f"📎 Baixar anexo: {anexo_nome}",
+                                data=anexo_bytes,
+                                file_name=anexo_nome
+                            )
 
-                for i in range(0, len(cards), 3):
-                    cols = st.columns(3)
-                    for j in range(3):
-                        if i + j < len(cards):
-                            with cols[j]:
-                                st.markdown(cards[i + j], unsafe_allow_html=True)
-
+    # Painel lateral de atividades recentes
     with col_atividades:
         st.markdown("### 🕒 Atividades recentes")
         atividades = st.session_state.dados.sort_values("data", ascending=False).head(10)
