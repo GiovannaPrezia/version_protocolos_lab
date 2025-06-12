@@ -5,7 +5,7 @@ def exibir_reagentes():
     df = st.session_state.dados
     reag_df = df[df["categoria"] == "🧪 Protocolo de Reagentes/Soluções"]
 
-    st.title("🧬 Protocolos de Reagentes")
+    st.title("🧬 Lista de Reagentes")
     st.markdown("Esta seção lista os protocolos classificados como reagentes/soluções.")
 
     if reag_df.empty:
