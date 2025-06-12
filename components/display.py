@@ -2,12 +2,6 @@ import streamlit as st
 from urllib.parse import quote
 from datetime import datetime
 
-st.markdown("""
-        <h2 style='text-align: center;'>🔬 LabTrack: Plataforma de Controle de Versionamento de Protocolos Laboratoriais</h2>
-        <hr>
-    """, unsafe_allow_html=True)
-
-
 def exibir_protocolos():
     df = st.session_state.dados
     if df.empty:
@@ -15,8 +9,11 @@ def exibir_protocolos():
         return
 
     df = df[df["categoria"] != "🧪 Protocolo de Reagentes/Soluções"]
-
-
+	
+	st.title("""
+        <h2 style='text-align: center;'>🔬 LabTrack: Plataforma de Controle de Versionamento de Protocolos Laboratoriais</h2>
+        <hr>
+    """, unsafe_allow_html=True)
     st.markdown("## Protocolos cadastrados")
     termo = st.text_input("🔎 Filtrar protocolos")
 
