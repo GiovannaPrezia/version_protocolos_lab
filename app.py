@@ -19,7 +19,7 @@ menu = st.sidebar.radio("Menu", [
     "📤 Exportar / Backup"
 ])
 
-if menu == "➕ Cadastrar Novo Protocoloo":
+if menu == "➕ Cadastrar Novo Protocolo":
     forms.exibir_formulario()
 elif menu == "📄 Protocolos Gerais":
     display.exibir_protocolos()
