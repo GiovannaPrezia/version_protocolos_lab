@@ -13,17 +13,17 @@ if "dados" not in st.session_state:
     ])
 
 menu = st.sidebar.radio("Menu", [
-    "➕ Novo Protocolo",
+    "➕ Cadastrar Novo Protocolo",
     "📄 Protocolos Gerais",
-    "🧬 Protocolos de Reagentes",
+    "🧬 Lista de Reagentes",
     "📤 Exportar / Backup"
 ])
 
-if menu == "➕ Novo Protocolo":
+if menu == "➕ Cadastrar Novo Protocoloo":
     forms.exibir_formulario()
 elif menu == "📄 Protocolos Gerais":
     display.exibir_protocolos()
-elif menu == "🧬 Protocolos de Reagentes":
+elif menu == "🧬 Lista de Reagentes":
     reagentes.exibir_reagentes()
 elif menu == "📤 Exportar / Backup":
     export.exibir_exportacoes()
